@@ -7,5 +7,6 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 router.post('/register', usersHandler.register);
-
+router.post('/login', usersHandler.login);
+router.put('/:id', usersHandler.update);
 module.exports = router;
