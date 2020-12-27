@@ -1,10 +1,11 @@
-var express = require('express');
-var router = express.Router();
-const { APP_NAME } = process.env;
+const express = require('express');
+const router = express.Router();
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('media');
-});
+const verifyToken = require('../middlewares/verifyToken');
+const mediaHandler = require('./handler/media'); 
+/* post users listing. */
+router.post('/', mediaHandler.create);
+router.get('/', verifyToken, mediaHandler.getAll);
+router.delete('/:id', mediaHandler.destroy);
 
 module.exports = router;
