@@ -11,7 +11,11 @@ class Chapter extends Model
     protected $fillable = [
         'name', 'course_id'
     ];
-    public function lesson()
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:m:s',
+        'updated_at' => 'datetime:Y-m-d H:m:s'
+    ];
+    public function lessons()
     {
         return $this->hasMany('App\Lesson')->orderBy('id', 'ASC');
     }

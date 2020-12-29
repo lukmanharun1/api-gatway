@@ -12,12 +12,16 @@ class Course extends Model
         'name', 'certificate', 'thumbail', 'type', 'status',
         'price', 'level', 'description', 'mentor_id'
     ];
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:m:s',
+        'updated_at' => 'datetime:Y-m-d H:m:s'
+    ];
     public function mentor()
     {
         return $this->belongsTo('App\Mentor');
     }
 
-    public function chapter()
+    public function chapters()
     {
         return $this->hasMany('App\Chapter')->orderBy('id', 'ASC');
     }
