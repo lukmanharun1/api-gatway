@@ -8,6 +8,7 @@ use App\Course;
 use App\Mentor;
 use App\MyCourse;
 use App\Review;
+use App\Chapter;
 
 class CourseController extends Controller
 {
@@ -43,9 +44,26 @@ class CourseController extends Controller
             ], 404);
         }
 
-        $review = Review::where('course_id', '=', $id)->get()->toArray();
+        $reviews = Review::where('course_id', '=', $id)->get()->toArray();
+        if (count($reviews) > 0) {
+            $userIds = array_column($reviews, 'user_id');
+            $users = getUserByIds($userIds);
+            // echo "<pre>" . print_r($users, 1) . "</pre>";
+            if ($users['status'] === 'error') {
+                $reviews = [];
+            } else {
+                foreach ($reviews as $key => $review) {
+                    $userIndex = array_search($review['user_id'], array_column($users['data'], 'id'));
+                    $reviews[$key]['users'] = $users['data'][$userIndex];
+                }
+            }
+        }
         $totalStudent = MyCourse::where('course_id', '=', $id)->count();
-        $course['reviews'] = $review;
+        $totalVideos = Chapter::where('course_id', '=', $id)->withCount('lessons')->get()->toArray();
+        $finalTotalVideos = array_sum(array_column($totalVideos, 'lessons_count'));
+
+        $course['reviews'] = $reviews;
+        $course['total_videos'] = $finalTotalVideos;
         $course['total_student'] = $totalStudent;
         return response()->json([
             'status' => 'success',
